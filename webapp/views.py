@@ -69,5 +69,11 @@ def book_delete_view(request, pk):
         context()['book'] = book
         return render(request, 'delete_book.html', context())
     elif request.method == "POST":
-        book.delete()
-        return redirect('book_list')
+        user_input = request.POST.get('подтверждение', '')
+        if user_input == book.mail:
+            book.delete()
+            return redirect('book_list')
+        else:
+            context()['book'] = book
+            context()['error'] = 'Вы ввели неверно. Удаление отменено.'
+            return render(request, 'delete_book.html', context())
