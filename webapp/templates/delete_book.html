@@ -15,7 +15,7 @@
                 {% csrf_token %}
                 <button type="submit">Да</button>
             </form>
-            <a href="{% url 'book_view' book.pk %}">Нет</a>
+            <a href="{% url 'book_list' %}">Нет</a>
         </div>
     </div>
 {% endblock %}

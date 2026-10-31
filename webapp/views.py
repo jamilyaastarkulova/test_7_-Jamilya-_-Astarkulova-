@@ -5,22 +5,23 @@ from webapp.forms import BookForm
 from  webapp.models import Book
 from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
 
-def index_view(request):
+def context():
     context = {
-        'books': Book.objects.all()
+        'books': Book.objects.filter(status='active').order_by('-id')
     }
-    return render(request, 'index.html', context)
+    return context
 
-def book_view(request, pk):
+def index_view(request):
+    return render(request, 'index.html', context())
+
+#def book_view(request, pk):
     # try:
     #     book = Book.objects.get(pk=pk)
     # except Book.DoesNotExist:
     #     # return HttpResponseNotFound('Book not found')
     #     raise Http404('Book not found')
-    book = get_object_or_404(Book, pk=pk)
-    return render(request, 'book_view.html', {'book': book})
-
-
+    #book = get_object_or_404(Book, pk=pk)
+    #return render(request, 'index.html', context())
 
 def book_create_view(request):
 
@@ -33,8 +34,11 @@ def book_create_view(request):
             title = form.cleaned_data.get('title')
             content = form.cleaned_data.get('content')
             author = form.cleaned_data.get('author')
-            book = Article.objects.create(title=title, content=content, author=author)
-            return redirect('book_view', pk=book.id)
+            mail = form.cleaned_data.get('mail')
+            status = form.cleaned_data.get('status')
+            book = Book.objects.create(title=title, content=content, author=author, mail=mail, status=status)
+            #book.save()
+            return redirect('book_list')
         else:
             return render(request, 'create_book.html', {'form': form})
 
@@ -42,25 +46,28 @@ def book_create_view(request):
 def book_update_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'GET':
-        form = BookForm(initial={'title': book.title, 'content': book.content, 'author': book.author})
-        return render(request, 'update_book.html', {'book': book, 'form': form})
+        form = BookForm(initial={'title': book.title, 'content': book.content, 'author': book.author, 'mail': book.mail, 'status': book.status})
+        return render(request, 'update_book.html', {**context(), 'form': form})
     elif request.method == 'POST':
         form = BookForm(data=request.POST)
         if form.is_valid():
             book.title = form.cleaned_data.get('title')
             book.content = form.cleaned_data.get('content')
             book.author = form.cleaned_data.get('author')
+            book.mail = form.cleaned_data.get('mail')
+            book.status = form.cleaned_data.get('status')
             book.save()
-            return redirect('book_view', pk=book.id)
+            return redirect('book_list')
         else:
-            return render(request, 'update_book.html', {'book': book, 'form': form})
+            return render(request, 'update_book.html', {**context(), 'form': form})
 
 
 
 def book_delete_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == "GET":
-        return render(request, 'delete_book.html', {'book': book})
+        context()['book'] = book
+        return render(request, 'delete_book.html', context())
     elif request.method == "POST":
         book.delete()
         return redirect('book_list')
