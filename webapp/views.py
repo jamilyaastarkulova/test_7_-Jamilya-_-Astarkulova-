@@ -77,3 +77,9 @@ def book_delete_view(request, pk):
             context()['book'] = book
             context()['error'] = 'Вы ввели неверно. Удаление отменено.'
             return render(request, 'delete_book.html', context())
+
+def all_books_view(request):
+    context = {
+        'books': Book.objects.all().order_by('-id')
+    }
+    return render(request, 'all_books.html', context)

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Все записи</h1>
+
+    <div class="row row-cols-3">
+
+        {% for book in books %}
+            <div class="col mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        Author: {{ book.author }}
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ book.title }}</h4>
+                        <p>{{ book.mail }}</p>
+                        <p>{{ book.status }}</p>
+                        <small class="fg-2">content: {{ book.content }}</small>
+                        <div>
+                            <a role="button" href="{% url 'book_update' book.pk %}"
+                               class="btn-solid theme-success">Обновить</a>
+                            <a role="button"
+                               href="{% url 'book_delete' book.pk %}"
+                               class="btn-solid theme-danger">Удалить</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
