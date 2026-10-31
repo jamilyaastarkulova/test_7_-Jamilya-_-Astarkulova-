@@ -6,16 +6,16 @@
 
 
 
-    <h1>Удаление статьи</h1>
+    <h1>Удаление записи</h1>
 
     <div class="card">
         <div class="card-body">
-            <p>Вы действительно хотите удалить статью "{{ article.title }}"?</p>
+            <p>Вы действительно хотите удалить запись "{{ book.title }}"?</p>
             <form method="post">
                 {% csrf_token %}
                 <button type="submit">Да</button>
             </form>
-            <a href="{% url 'article_view' article.pk %}">Нет</a>
+            <a href="{% url 'book_view' book.pk %}">Нет</a>
         </div>
     </div>
 {% endblock %}
